@@ -1,0 +1,2460 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:fatturapa="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2" xmlns:tns="http://www.andxor.com/fatturapa/wsdl" xmlns:corrispettivo="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v2.0" xmlns:fatturasm="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.0" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.andxor.com/fatturapa/wsdl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.andxor.com/fatturapa/wsdl">
+      <xsd:import schemaLocation="https://tinv.andxor.it:443/userServices?xsd=2" namespace="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2" />
+      <xsd:import schemaLocation="https://tinv.andxor.it:443/userServices?xsd=3" namespace="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.0" />
+      <xsd:import schemaLocation="https://tinv.andxor.it:443/userServices?xsd=1" namespace="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v2.0" />
+      <xsd:simpleType name="positiveJavaInt">
+        <xsd:restriction base="xsd:int">
+          <xsd:minInclusive value="1" />
+          <xsd:maxInclusive value="2147483647" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="nonNegativeJavaInt">
+        <xsd:restriction base="xsd:int">
+          <xsd:minInclusive value="0" />
+          <xsd:maxInclusive value="2147483647" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="ServerInfoReqType">
+        <xsd:annotation>
+          <xsd:documentation>Informantions about the server.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence />
+      </xsd:complexType>
+      <xsd:element name="ServerInfoReq" type="tns:ServerInfoReqType" />
+      <xsd:complexType name="ServerInfoType">
+        <xsd:annotation>
+          <xsd:documentation>Informantions about the server.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="Version" type="tns:positiveJavaInt">
+            <xsd:annotation>
+              <xsd:documentation>Server version.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="API" type="tns:positiveJavaInt">
+            <xsd:annotation>
+              <xsd:documentation>API version.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ServerInfo" type="tns:ServerInfoType" />
+      <xsd:complexType name="AutenticazioneType">
+        <xsd:annotation>
+          <xsd:documentation>The authentication data used by all the methods.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="Cedente" type="fatturapa:IdFiscaleType">
+            <xsd:annotation>
+              <xsd:documentation>User identification.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="Password" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>User password.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="Gestione" type="fatturapa:IdFiscaleType">
+            <xsd:annotation>
+              <xsd:documentation>When "Cedente" is a manager or an administrator, this field can be used to act on the behalf of this user.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="SetPinType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="Cedente" type="fatturapa:IdFiscaleType" />
+          <xsd:element minOccurs="0" name="Alias" type="xsd:string" />
+          <xsd:element name="Password" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="SetPin" type="tns:SetPinType" />
+      <xsd:complexType name="SetConfType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="Servizi" type="tns:ServizioType" />
+          <xsd:element name="Set" type="xsd:boolean" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="SetConf" type="tns:SetConfType" />
+      <xsd:element name="UpdatedConf" type="xsd:boolean" />
+      <xsd:complexType name="StatsReqType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="DataInizio" type="xsd:date" />
+          <xsd:element name="DataFine" type="xsd:date" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="StatsReq" type="tns:StatsReqType" />
+      <xsd:element name="Set" type="xsd:boolean" />
+      <xsd:element name="Stats" type="xsd:string" />
+      <xsd:complexType name="SignKeyType">
+        <xsd:sequence>
+          <xsd:element name="Alias" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Password" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="FatturaType">
+        <xsd:annotation>
+          <xsd:documentation>All the necessary data to build (and send) an invoice.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:choice>
+            <xsd:element name="CodiceDestinatario" type="fatturapa:CodiceDestinatarioType">
+              <xsd:annotation>
+                <xsd:documentation>This is the code that identifies the receiver. It must be 6 letters long for Public Administration or 7 letters long for privates.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="PECDestinatario" type="fatturapa:EmailType">
+              <xsd:annotation>
+                <xsd:documentation>Send this invoice using to this certified e-mail address.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:choice minOccurs="0">
+            <xsd:element name="OverrideCedente" type="fatturapa:CedentePrestatoreType">
+              <xsd:annotation>
+                <xsd:documentation>This overrides the part of the invoice that specifies the sender (as XML nodes). By default it is filled from the registration data.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="OverrideCedenteStr" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>This overrides the part of the invoice that specifies the sender (XML encoded in string form). By default it is filled from the registration data.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:element minOccurs="0" name="TerzoIntermediario" type="xsd:boolean" />
+          <xsd:choice>
+            <xsd:element name="CessionarioCommittente" type="fatturapa:CessionarioCommittenteType">
+              <xsd:annotation>
+                <xsd:documentation>This is the part of the invoice that specifies the receiver (as XML nodes).</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="CessionarioCommittenteStr" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>This is the part of the invoice that specifies the receiver (XML encoded in string form).</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:choice>
+            <xsd:element name="FatturaElettronicaBody" type="fatturapa:FatturaElettronicaBodyType">
+              <xsd:annotation>
+                <xsd:documentation>This is the body of the invoice (as XML nodes).</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="FatturaElettronicaBodyStr" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>This is the body of the invoice (XML encoded in string form).</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Fattura" type="tns:FatturaType" />
+      <xsd:complexType name="FatturaSMType">
+        <xsd:annotation>
+          <xsd:documentation>All the necessary data to build (and send) a simplified invoice.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:choice>
+            <xsd:element name="CodiceDestinatario" type="fatturasm:CodiceDestinatarioType">
+              <xsd:annotation>
+                <xsd:documentation>This is the code that identifies the receiver. It must be 6 letters long for Public Administration or 7 letters long for privates.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="PECDestinatario" type="fatturasm:EmailType">
+              <xsd:annotation>
+                <xsd:documentation>Send this invoice using to this certified e-mail address.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:choice minOccurs="0">
+            <xsd:element name="OverrideCedente" type="fatturasm:CedentePrestatoreType">
+              <xsd:annotation>
+                <xsd:documentation>This overrides the part of the invoice that specifies the sender (as XML nodes). By default it is filled from the registration data.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="OverrideCedenteStr" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>This overrides the part of the invoice that specifies the sender (XML encoded in string form). By default it is filled from the registration data.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:choice>
+            <xsd:element name="CessionarioCommittente" type="fatturasm:CessionarioCommittenteType">
+              <xsd:annotation>
+                <xsd:documentation>This is the part of the invoice that specifies the receiver (as XML nodes).</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="CessionarioCommittenteStr" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>This is the part of the invoice that specifies the receiver (XML encoded in string form).</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:choice>
+            <xsd:element name="FatturaElettronicaBody" type="fatturasm:FatturaElettronicaBodyType">
+              <xsd:annotation>
+                <xsd:documentation>This is the body of the invoice (as XML nodes).</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="FatturaElettronicaBodyStr" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>This is the body of the invoice (XML encoded in string form).</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="FatturaSM" type="tns:FatturaSMType" />
+      <xsd:complexType name="RicevutaType">
+        <xsd:sequence>
+          <xsd:element name="ProgressivoInvio" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>This is the sequential identifier assigned to this invoice.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="DataOraRicezione" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation>Date and time the invoice was received the first time; this value is only used when the invoice is a duplicate of a previous invoice that was already received by the system at a previous time.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Ricevuta" type="tns:RicevutaType" />
+      <xsd:complexType name="CorrispettivoType">
+        <xsd:annotation>
+          <xsd:documentation>All the necessary data to build (and send) a corrispettivo.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element maxOccurs="unbounded" name="DatiFatturaBodyDTE" type="corrispettivo:DatiFatturaBodyDTEType">
+            <xsd:annotation>
+              <xsd:documentation>This is the body of the corrispettivo (as XML nodes).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Corrispettivo" type="tns:CorrispettivoType" />
+      <xsd:complexType name="CancelCorrispettivoType">
+        <xsd:annotation>
+          <xsd:documentation>All the necessary data to cancel corrispettivo.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IdFile" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>This is the corrispettivo id to cancel.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="CancelCorrispettivo" type="tns:CancelCorrispettivoType" />
+      <xsd:complexType name="RicevutaCorrispettivoType">
+        <xsd:sequence>
+          <xsd:element name="ProgressivoInvio" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>This is the sequential identifier assigned.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="DataOraRicezione" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation>Date and time first time received.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="RicevutaCorrispettivo" type="tns:RicevutaCorrispettivoType" />
+      <xsd:complexType name="PasvRicevutaType">
+        <xsd:sequence>
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type">
+            <xsd:annotation>
+              <xsd:documentation>This is the sequential identifier assigned to this invoice.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PasvRicevuta" type="tns:PasvRicevutaType" />
+      <xsd:element name="Errore" type="xsd:string" />
+      <xsd:simpleType name="identificativoSdI_Type">
+        <xsd:restriction base="xsd:integer">
+          <xsd:totalDigits value="12" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="PeriodoType">
+        <xsd:annotation>
+          <xsd:documentation>Period to report (period surrounding the selected day)</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Giorno">
+            <xsd:annotation>
+              <xsd:documentation>Report of a single day.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Settimana">
+            <xsd:annotation>
+              <xsd:documentation>Report of a week (from Monday to Sunday).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Mese">
+            <xsd:annotation>
+              <xsd:documentation>Report of a whole month.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Anno">
+            <xsd:annotation>
+              <xsd:documentation>Report of a whole year.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="AccountingFilterType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="Giorno" type="xsd:date">
+            <xsd:annotation>
+              <xsd:documentation>Day we want to extract a report of.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="Periodo" type="tns:PeriodoType">
+            <xsd:annotation>
+              <xsd:documentation>Period to report surrounding the selected day: e.g. if a Tuesday is selected the report of type "Settimana" will cover from the previous Monday to the following Sunday, if any day of a month is selected a report of type "Mese" will cover the whole month.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="AccountingFilter" type="tns:AccountingFilterType" />
+      <xsd:complexType name="FilterType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element minOccurs="0" name="Testo" type="xsd:string" />
+          <xsd:choice minOccurs="0">
+            <xsd:element name="DataInizio" type="xsd:date">
+              <xsd:annotation>
+                <xsd:documentation>Starting creation date (field DataOraCreazione). Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="DataOraInizio" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Starting creation date (field DataOraCreazione) dateTime format. Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:choice minOccurs="0">
+            <xsd:element name="DataFine" type="xsd:date">
+              <xsd:annotation>
+                <xsd:documentation>Ending creation date (field DataOraCreazione). Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="DataOraFine" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Ending creation date (field DataOraCreazione) dateTime format. Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:element minOccurs="0" name="Limite" type="tns:positiveJavaInt">
+            <xsd:annotation>
+              <xsd:documentation>The maximum number of invoices in the search results. Unbounded when not defined.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="DataParam" type="tns:DataParamType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Filter" type="tns:FilterType" />
+      <xsd:complexType name="FilterCorrType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element minOccurs="0" name="Testo" type="xsd:string" />
+          <xsd:choice minOccurs="0">
+            <xsd:element name="DataInizio" type="xsd:date">
+              <xsd:annotation>
+                <xsd:documentation>Starting creation date (field DataOraCreazione). Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="DataOraInizio" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Starting creation date (field DataOraCreazione) dateTime format. Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:choice minOccurs="0">
+            <xsd:element name="DataFine" type="xsd:date">
+              <xsd:annotation>
+                <xsd:documentation>Ending creation date (field DataOraCreazione). Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="DataOraFine" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Ending creation date (field DataOraCreazione) dateTime format. Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:element minOccurs="0" name="Limite" type="tns:positiveJavaInt">
+            <xsd:annotation>
+              <xsd:documentation>The maximum number of invoices in the search results. Unbounded when not defined.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="DataParam" type="tns:DataParamType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="FilterCorr" type="tns:FilterCorrType" />
+      <xsd:complexType name="ShortStatusType">
+        <xsd:sequence>
+          <xsd:element name="ProgressivoInvio" type="xsd:string" />
+          <xsd:element name="CodiceDestinatario" type="fatturapa:CodiceDestinatarioType" />
+          <xsd:element name="Stato" type="tns:StatusType" />
+          <xsd:element name="DataOraCreazione" type="xsd:dateTime" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+          <xsd:element name="CedenteCodice" type="fatturapa:IdFiscaleType" />
+          <xsd:element name="CommittenteDenominazione" type="xsd:string" />
+          <xsd:element name="Data" type="xsd:dateTime" />
+          <xsd:element name="TipoDocumento" type="xsd:string" />
+          <xsd:element name="Numero" type="xsd:string" />
+          <xsd:element name="Privati" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="FuoriTermini" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="Conservazione" type="tns:nonNegativeJavaInt" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ShortStatusCorrType">
+        <xsd:sequence>
+          <xsd:element name="ProgressivoInvio" type="xsd:string" />
+          <xsd:element name="Stato" type="tns:StatusCorrType" />
+          <xsd:element name="DataOraCreazione" type="xsd:dateTime" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+          <xsd:element name="CedenteCodice" type="fatturapa:IdFiscaleType" />
+          <xsd:element name="Data" type="xsd:dateTime" />
+          <xsd:element name="TipoDocumento" type="xsd:string" />
+          <xsd:element name="Numero" type="xsd:string" />
+          <xsd:element minOccurs="0" name="FuoriTermini" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="Conservazione" type="tns:nonNegativeJavaInt" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="InvoiceReportType">
+        <xsd:sequence>
+          <xsd:element name="Attive" type="tns:nonNegativeJavaInt">
+            <xsd:annotation>
+              <xsd:documentation>Number of active invoices sent in the specified period.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="Passive" type="tns:nonNegativeJavaInt">
+            <xsd:annotation>
+              <xsd:documentation>Number of passive invoices received in the specified period.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="AttivePrec" type="tns:nonNegativeJavaInt">
+            <xsd:annotation>
+              <xsd:documentation>Number of active invoices sent in the specified period that were emitted in a different month than they were received (this is included in "Attive", so it is always less or equal than that).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="PassivePrec" type="tns:nonNegativeJavaInt">
+            <xsd:annotation>
+              <xsd:documentation>Number of passive invoices received in the specified period that were emitted in a different month than they were received (this is included in "Passive", so it is always less or equal than that).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ReportType">
+        <xsd:sequence>
+          <xsd:element name="IdFiscale" type="fatturapa:IdFiscaleType" />
+          <xsd:element name="Denominazione" type="xsd:string" />
+          <xsd:element name="Ruolo" type="xsd:string" />
+          <xsd:element name="Crediti" type="xsd:int" />
+          <xsd:element name="Flat" type="xsd:boolean" />
+          <xsd:element name="FattureMie" type="tns:InvoiceReportType">
+            <xsd:annotation>
+              <xsd:documentation>These invoices are the user's own (sent or received directly by this company).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="FattureTutte" type="tns:InvoiceReportType">
+            <xsd:annotation>
+              <xsd:documentation>These invoices include all of the user's own invoices and all of the companies (directly or indirectly) managed by this one.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="UtenteType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Utente" type="tns:UtenteType" />
+      <xsd:complexType name="DatiCedente">
+        <xsd:sequence>
+          <xsd:element name="IdPaese" type="xsd:string" />
+          <xsd:element name="IdCodice" type="xsd:string" />
+          <xsd:element minOccurs="0" name="CodiceDestinatario" type="fatturapa:CodiceDestinatarioType" />
+          <xsd:element name="Denominazione" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Email" type="xsd:string" />
+          <xsd:element name="Role" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Gestore" type="fatturapa:IdFiscaleType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="DatiCedente" type="tns:DatiCedente" />
+      <xsd:complexType name="DatiFullCedente">
+        <xsd:complexContent mixed="false">
+          <xsd:extension base="tns:DatiCedente">
+            <xsd:sequence>
+              <xsd:element name="Crediti" type="xsd:int" />
+              <xsd:element name="SogliaCrediti" type="xsd:int" />
+              <xsd:element name="Flat" type="xsd:boolean" />
+              <xsd:element minOccurs="0" name="IdPaeseGestore" type="xsd:string" />
+              <xsd:element minOccurs="0" name="IdCodiceGestore" type="xsd:string" />
+              <xsd:element name="Sospeso" type="xsd:boolean" />
+              <xsd:element name="Attivo" type="xsd:boolean" />
+              <xsd:element minOccurs="0" name="Conf" type="xsd:string" />
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:element name="DatiFullCedente" type="tns:DatiFullCedente" />
+      <xsd:complexType name="CedentiType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Cedente" type="tns:DatiCedente" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Cedenti" type="tns:CedentiType" />
+      <xsd:complexType name="NewCedenteType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="Cedente" type="fatturapa:CedentePrestatoreType" />
+          <xsd:element name="Password" type="xsd:string" />
+          <xsd:element minOccurs="0" name="SignKey" type="tns:SignKeyType" />
+          <xsd:element minOccurs="0" name="CodiceDestinatario" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>Code that this user will receive invoices for; must be 6 characters long for public sector and 7 characters long for private sector. If omitted the client won't be able to receive invoices. The special value "B2B" can be used for private sector clients that don't have an individual code assigned (which is the most common case). This can only be set once and can never be changed.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="Flat" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="EmailNotifica" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Ruolo" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Gestore" type="fatturapa:IdFiscaleType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="NewCedente" type="tns:NewCedenteType" />
+      <xsd:complexType name="UpdateCedenteType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="Cedente" type="fatturapa:CedentePrestatoreType" />
+          <xsd:element minOccurs="0" name="CodiceDestinatario" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>Code that this user will receive invoices for; must be 6 characters long for public sector and 7 characters long for private sector. If omitted the client won't be able to receive invoices. The special value "B2B" can be used for private sector clients that don't have an individual code assigned (which is the most common case). This can only be set once and can never be changed.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="Flat" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="EmailNotifica" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Ruolo" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="UpdateCedente" type="tns:UpdateCedenteType" />
+      <xsd:element name="Created" type="xsd:boolean" />
+      <xsd:element name="Updated" type="xsd:boolean" />
+      <xsd:complexType name="PrepareCedenteType">
+        <xsd:sequence>
+          <xsd:element name="Cedente" type="fatturapa:CedentePrestatoreType" />
+          <xsd:element name="CodiceDestinatario" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PrepareCedente" type="tns:PrepareCedenteType" />
+      <xsd:complexType name="PrepareType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Prepare" type="tns:PrepareType" />
+      <xsd:complexType name="GestoreType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Gestore" type="tns:GestoreType" />
+      <xsd:complexType name="AttGestitoType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="Attivo" type="xsd:boolean" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="SospGestitoType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="Sospeso" type="xsd:boolean" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="CredGestitoType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="AggiornaCrediti" type="xsd:int" />
+          <xsd:element name="AggiornaSogliaCrediti" type="xsd:int" />
+          <xsd:element minOccurs="0" name="Note" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="AttGestito" type="tns:AttGestitoType" />
+      <xsd:element name="SospGestito" type="tns:SospGestitoType" />
+      <xsd:element name="CredGestito" type="tns:CredGestitoType" />
+      <xsd:element name="Enabled" type="xsd:boolean" />
+      <xsd:element name="Suspended" type="xsd:boolean" />
+      <xsd:complexType name="CreditiCedenteType">
+        <xsd:sequence>
+          <xsd:element name="Crediti" type="xsd:int" />
+          <xsd:element name="SogliaCrediti" type="xsd:int" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="CreditiCedente" type="tns:CreditiCedenteType" />
+      <xsd:complexType name="FattureType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Fattura" type="tns:ShortStatusType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Fatture" type="tns:FattureType" />
+      <xsd:complexType name="CorrispettiviType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Corrispettivo" type="tns:ShortStatusCorrType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Corrispettivi" type="tns:CorrispettiviType" />
+      <xsd:complexType name="ResocontiType">
+        <xsd:sequence>
+          <xsd:element name="ResocontoManager" type="tns:ReportType" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="ResocontoCedente" type="tns:ReportType" />
+          <xsd:element name="DataInizio" type="xsd:date" />
+          <xsd:element name="DataFine" type="xsd:date" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Resoconti" type="tns:ResocontiType" />
+      <xsd:complexType name="QueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="ProgressivoInvio" type="xsd:string" />
+          <xsd:element minOccurs="0" name="ProgressivoRicezione" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Minimal" type="xsd:boolean" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Query" type="tns:QueryType" />
+      <xsd:complexType name="RecuperaPasswordType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="RecuperaPassword" type="tns:RecuperaPasswordType" />
+      <xsd:element name="PasswordRecuperata" type="xsd:boolean" />
+      <xsd:complexType name="QueryCorrType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="ProgressivoInvio" type="xsd:string" />
+          <xsd:element minOccurs="0" name="ProgressivoRicezione" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Minimal" type="xsd:boolean" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="QueryCorr" type="tns:QueryCorrType" />
+      <xsd:complexType name="AggiornaPasswordType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="NuovaPassword" type="xsd:string" />
+          <xsd:element name="ConfermaNuovaPassword" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="AggiornaPassword" type="tns:AggiornaPasswordType" />
+      <xsd:element name="PasswordAggiornata" type="xsd:boolean" />
+      <xsd:complexType name="CambioPasswordType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="NuovaPassword" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="CambioPassword" type="tns:CambioPasswordType" />
+      <xsd:element name="PasswordCambiata" type="xsd:boolean" />
+      <xsd:complexType name="CambioEmailType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="NuovaEmail" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="CambioEmail" type="tns:CambioEmailType" />
+      <xsd:element name="EmailCambiata" type="xsd:boolean" />
+      <xsd:complexType name="FileType">
+        <xsd:sequence>
+          <xsd:element name="Nome" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>The file name.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="Contenuto" type="xsd:base64Binary">
+            <xsd:annotation>
+              <xsd:documentation>The file content, encoded in base64.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="XML" type="tns:FileType" />
+      <xsd:element name="XMLCorr" type="tns:FileType" />
+      <xsd:element name="ZIP" type="tns:FileType" />
+      <xsd:element name="PDF" type="tns:FileType" />
+      <xsd:element name="Metadati" type="tns:FileType" />
+      <xsd:simpleType name="StatusType">
+        <xsd:annotation>
+          <xsd:documentation>State of the invoice.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Generata">
+            <xsd:annotation>
+              <xsd:documentation>Initial state, as soon as TInv receives the invoice from the user.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Trasmessa allo SdI">
+            <xsd:annotation>
+              <xsd:documentation>SdI accepted this invoice and an IdentificativoSdI is available.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Scartata">
+            <xsd:annotation>
+              <xsd:documentation>SdI rejected this invoice; an event (notifica) details the reasons.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Non ancora consegnata">
+            <xsd:annotation>
+              <xsd:documentation>Not yet sent to the recipient by SdI.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Consegnata">
+            <xsd:annotation>
+              <xsd:documentation>SdI confirms it was sent to the recipient.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Accettata">
+            <xsd:annotation>
+              <xsd:documentation>(only Public Administration) The recipient accepted the invoice.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Rifiutata">
+            <xsd:annotation>
+              <xsd:documentation>(only Public Administration) The recipient rejected the invoice.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Decorsi i termini">
+            <xsd:annotation>
+              <xsd:documentation>The invoice is expired (15 days).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Non recapitabile">
+            <xsd:annotation>
+              <xsd:documentation>The invoice could not be sent to the recipient.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Nel cassetto">
+            <xsd:annotation>
+              <xsd:documentation>The invoice is available to the recipient in the private area of Agenzia delle Entrate website.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Rielaborata">
+            <xsd:annotation>
+              <xsd:documentation>This invoice was previously "Scartata" or "Rifiutata" and was sent again with the same metadata.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Importata">
+            <xsd:annotation>
+              <xsd:documentation>The invoice has been manually imported into the platform.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="StatusCorrType">
+        <xsd:annotation>
+          <xsd:documentation>State of the invoice.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Generato">
+            <xsd:annotation>
+              <xsd:documentation>Initial state, as soon as TInv receives the corrispettivo from the user.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Trasmesso allo SdI">
+            <xsd:annotation>
+              <xsd:documentation>SdI accepted this corrispettivo and an IdentificativoSdI is available.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Elaborato">
+            <xsd:annotation>
+              <xsd:documentation>The corrispettivo has been processed from SdI.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="In elaborazione">
+            <xsd:annotation>
+              <xsd:documentation>The corrispettivo is going to be processed SdI.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Errore">
+            <xsd:annotation>
+              <xsd:documentation>The corrispettivo received an error from SdI.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Annullato">
+            <xsd:annotation>
+              <xsd:documentation>The corrispettivo has been canceled by user.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="ServizioType">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="uploader" />
+          <xsd:enumeration value="pasvUploader" />
+          <xsd:enumeration value="receiptUploader" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="SimpleQueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="ProgressivoInvio" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="SimpleQuery" type="tns:SimpleQueryType" />
+      <xsd:complexType name="ZipQueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="ProgressivoInvio" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ZipQuery" type="tns:ZipQueryType" />
+      <xsd:complexType name="PDFQueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="ProgressivoInvio" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PDFQuery" type="tns:PDFQueryType" />
+      <xsd:complexType name="MultiQueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element maxOccurs="unbounded" name="ProgressivoInvio" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="MultiQuery" type="tns:MultiQueryType" />
+      <xsd:simpleType name="EventType">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="RC" />
+          <xsd:enumeration value="MC" />
+          <xsd:enumeration value="NS" />
+          <xsd:enumeration value="NE" />
+          <xsd:enumeration value="DT" />
+          <xsd:enumeration value="AT" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="FullEventType">
+        <xsd:sequence>
+          <xsd:element name="NomeFile" type="xsd:string" />
+          <xsd:element name="DataOraRicezione" type="xsd:dateTime" />
+          <xsd:element name="Tipo" type="tns:EventType" />
+          <xsd:element name="ProgressivoRicezione" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="FullStatusType">
+        <xsd:sequence>
+          <xsd:element name="NomeFile" type="xsd:string" />
+          <xsd:element name="Stato" type="tns:StatusType" />
+          <xsd:element minOccurs="0" name="Descrizione" type="xsd:string" />
+          <xsd:element name="Emessa" type="xsd:boolean" />
+          <xsd:element name="Finale" type="xsd:boolean" />
+          <xsd:element name="DataOraCreazione" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" name="IdSdI" type="tns:identificativoSdI_Type" />
+          <xsd:element minOccurs="0" name="DataOraRicezione" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" name="DataOraConsegna" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" name="Anomalia" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Notifica" type="tns:FullEventType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Status" type="tns:FullStatusType" />
+      <xsd:simpleType name="DataParamType">
+        <xsd:annotation>
+          <xsd:documentation>Search date param setup.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="data_sistema">
+            <xsd:annotation>
+              <xsd:documentation>search by time the invoice first reached TInv (this is the default)</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="data_fattura">
+            <xsd:annotation>
+              <xsd:documentation>search by invoice date (if using DataOraInizio/DataOraFine only the date part will be used and the time ignored)</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="data_corrispettivo">
+            <xsd:annotation>
+              <xsd:documentation>search by corrispettivo date (if using DataOraInizio/DataOraFine only the date part will be used and the time ignored)</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="AttNotifierType">
+        <xsd:sequence>
+          <xsd:element name="DataOraRicezione" type="xsd:dateTime" />
+          <xsd:element name="NomeFile" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Descrizione" type="xsd:string" />
+          <xsd:element name="NumeroFattura" type="xsd:string" />
+          <xsd:element name="Stato" type="tns:StatusType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="AttNotifier" type="tns:AttNotifierType" />
+      <xsd:complexType name="NotifyFEType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="NotifyFE" type="tns:NotifyFEType" />
+      <xsd:complexType name="DeleteType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="ProgressivoInvio" type="xsd:string" />
+          <xsd:element name="SoloFile" type="xsd:boolean" />
+          <xsd:element name="SoloSeFinale" type="xsd:boolean" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Delete" type="tns:DeleteType" />
+      <xsd:element name="Deleted" type="xsd:boolean" />
+      <xsd:complexType name="ImpostaFirmaType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element minOccurs="0" name="Alias" type="xsd:string" />
+          <xsd:element name="Password" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ImpostaFirma" type="tns:ImpostaFirmaType" />
+      <xsd:element name="FirmaImpostata" type="xsd:boolean" />
+      <xsd:complexType name="PasvFilterType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IncludiArchiviate" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="Testo" type="xsd:string" />
+          <xsd:choice minOccurs="0">
+            <xsd:element name="DataInizio" type="xsd:date">
+              <xsd:annotation>
+                <xsd:documentation>Starting reception date (field DataOraRicezione). Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="DataOraInizio" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Starting reception date (field DataOraRicezione) dateTime format. Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:choice minOccurs="0">
+            <xsd:element name="DataFine" type="xsd:date">
+              <xsd:annotation>
+                <xsd:documentation>Ending reception date (field DataOraRicezione). Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="DataOraFine" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Ending reception date (field DataOraRicezione) dateTime format. Unbounded when not defined.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:choice>
+          <xsd:element minOccurs="0" name="Limite" type="tns:positiveJavaInt">
+            <xsd:annotation>
+              <xsd:documentation>The maximum number of invoices in the search results. Unbounded when not defined.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="DataParam" type="tns:DataParamType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PasvFilter" type="tns:PasvFilterType" />
+      <xsd:complexType name="PasvShortStatusType">
+        <xsd:sequence>
+          <xsd:element name="ProgressivoAnnuale" type="xsd:int" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+          <xsd:element name="Posizione" type="xsd:unsignedShort" />
+          <xsd:element name="Stato" type="tns:PasvStatusType" />
+          <xsd:element name="DataOraRicezione" type="xsd:dateTime" />
+          <xsd:element name="CedenteCodice" type="fatturapa:IdFiscaleType" />
+          <xsd:element name="DataFattura" type="xsd:date" />
+          <xsd:element name="Numero" type="xsd:string" />
+          <xsd:element name="TipoDocumento" type="xsd:string" />
+          <xsd:element name="CedenteDenominazione" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Conservazione" type="tns:nonNegativeJavaInt" />
+          <xsd:element name="Privati" type="xsd:boolean" />
+          <xsd:element name="Archiviata" type="xsd:boolean" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="PasvFattureType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Fattura" type="tns:PasvShortStatusType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PasvFatture" type="tns:PasvFattureType" />
+      <xsd:complexType name="PasvQueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+          <xsd:element minOccurs="0" name="Posizione" type="xsd:unsignedShort" />
+          <xsd:element name="Unwrap" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="Minimal" type="xsd:boolean" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PasvQuery" type="tns:PasvQueryType" />
+      <xsd:element name="PasvXML" type="tns:FileType" />
+      <xsd:element name="PasvZIP" type="tns:FileType" />
+      <xsd:element name="PasvPDF" type="tns:FileType" />
+      <xsd:element name="PdD" type="tns:FileType" />
+      <xsd:simpleType name="PasvStatusType">
+        <xsd:annotation>
+          <xsd:documentation>State of the invoice.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Ricevuta">
+            <xsd:annotation>
+              <xsd:documentation>Initial state, as soon as TInv receives the invoice from SdI.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Accettata">
+            <xsd:annotation>
+              <xsd:documentation>(only Public Administration) Accepted by the user.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Rifiutata">
+            <xsd:annotation>
+              <xsd:documentation>(only Public Administration) Rejected by the user.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Trasmissione">
+            <xsd:annotation>
+              <xsd:documentation>(only Public Administration) Accept/Reject event is being sent.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Importata">
+            <xsd:annotation>
+              <xsd:documentation>(only Public Administration) Imported by the user.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Decorsi i termini">
+            <xsd:annotation>
+              <xsd:documentation>The invoice is expired (15 days).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="PasvSimpleQueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PasvSimpleQuery" type="tns:PasvSimpleQueryType" />
+      <xsd:complexType name="PasvZipQueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PasvZipQuery" type="tns:PasvZipQueryType" />
+      <xsd:complexType name="PasvPDFQueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+          <xsd:element minOccurs="0" name="Posizione" type="xsd:unsignedShort" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PasvPDFQuery" type="tns:PasvPDFQueryType" />
+      <xsd:complexType name="PasvMultiQueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element maxOccurs="unbounded" name="IdentificativoSdI" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PasvMultiQuery" type="tns:PasvMultiQueryType" />
+      <xsd:complexType name="PdDQueryType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element maxOccurs="unbounded" name="Conservazione" type="tns:positiveJavaInt" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PdDQuery" type="tns:PdDQueryType" />
+      <xsd:complexType name="ImportType">
+        <xsd:annotation>
+          <xsd:documentation>All the necessary data to upload an active b64 invoice.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="XML" type="tns:FileType" />
+          <xsd:element minOccurs="1" maxOccurs="unbounded" name="Notifica" type="tns:FileType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Import" type="tns:ImportType" />
+      <xsd:complexType name="PassiveImportType">
+        <xsd:annotation>
+          <xsd:documentation>All the necessary data to upload a passive b64 invoice.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="XML" type="tns:FileType" />
+          <xsd:element name="Metadati" type="tns:FileType" />
+          <xsd:element minOccurs="0" name="Notifica" type="tns:FileType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PasvImport" type="tns:PassiveImportType" />
+      <xsd:complexType name="ImportEventType">
+        <xsd:annotation>
+          <xsd:documentation>All the necessary data to upload an active b64 invoice.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="Notifica" type="tns:FileType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ImportEvent" type="tns:ImportEventType" />
+      <xsd:complexType name="AcceptType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+          <xsd:element name="Posizione" type="xsd:unsignedShort" />
+          <xsd:element name="Accepted" type="xsd:boolean" />
+          <xsd:element name="Description" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Accept" type="tns:AcceptType" />
+      <xsd:element name="Accepted" type="xsd:boolean" />
+      <xsd:complexType name="NotifierType">
+        <xsd:sequence>
+          <xsd:element name="DataOraCreazione" type="xsd:dateTime" />
+          <xsd:element name="NomeFile" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Descrizione" type="xsd:string" />
+          <xsd:element name="NumeroFattura" type="xsd:string" />
+          <xsd:element name="Stato" type="tns:PasvStatusType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Notifier" type="tns:NotifierType" />
+      <xsd:complexType name="PasvNotifyFEType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+          <xsd:element name="Posizione" type="xsd:unsignedShort" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PasvNotifyFE" type="tns:PasvNotifyFEType" />
+      <xsd:complexType name="UnarchiveType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+          <xsd:element name="Posizione" type="xsd:unsignedShort" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Unarchive" type="tns:UnarchiveType" />
+      <xsd:element name="Unarchived" type="xsd:boolean" />
+      <xsd:complexType name="StoreType">
+        <xsd:sequence>
+          <xsd:element name="Autenticazione" type="tns:AutenticazioneType" />
+          <xsd:element name="IdentificativoSdI" type="tns:identificativoSdI_Type" />
+          <xsd:element name="Posizione" type="xsd:unsignedShort" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Store" type="tns:StoreType" />
+      <xsd:element name="Stored" type="xsd:boolean" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="richiestaServerInfo_Msg">
+    <wsdl:part name="parametersIn" element="tns:ServerInfoReq" />
+  </wsdl:message>
+  <wsdl:message name="rispostaServerInfo_Msg">
+    <wsdl:part name="parametersOut" element="tns:ServerInfo" />
+  </wsdl:message>
+  <wsdl:message name="richiestaInfo_Msg">
+    <wsdl:part name="parametersIn" element="tns:Utente" />
+  </wsdl:message>
+  <wsdl:message name="rispostaInfo_Msg">
+    <wsdl:part name="parametersOut" element="tns:DatiFullCedente" />
+  </wsdl:message>
+  <wsdl:message name="richiestaInviaFattura_Msg">
+    <wsdl:part name="parametersIn" element="tns:Fattura" />
+  </wsdl:message>
+  <wsdl:message name="rispostaInviaFattura_Msg">
+    <wsdl:part name="parametersOut" element="tns:Ricevuta" />
+  </wsdl:message>
+  <wsdl:message name="richiestaInviaFatturaSM_Msg">
+    <wsdl:part name="parametersIn" element="tns:FatturaSM" />
+  </wsdl:message>
+  <wsdl:message name="rispostaInviaFatturaSM_Msg">
+    <wsdl:part name="parametersOut" element="tns:Ricevuta" />
+  </wsdl:message>
+  <wsdl:message name="richiestaInviaCorrispettivo_Msg">
+    <wsdl:part name="parametersIn" element="tns:Corrispettivo" />
+  </wsdl:message>
+  <wsdl:message name="rispostaInviaCorrispettivo_Msg">
+    <wsdl:part name="parametersOut" element="tns:RicevutaCorrispettivo" />
+  </wsdl:message>
+  <wsdl:message name="richiestaAnnullaCorrispettivo_Msg">
+    <wsdl:part name="parametersIn" element="tns:CancelCorrispettivo" />
+  </wsdl:message>
+  <wsdl:message name="rispostaAnnullaCorrispettivo_Msg">
+    <wsdl:part name="parametersOut" element="tns:RicevutaCorrispettivo" />
+  </wsdl:message>
+  <wsdl:message name="richiestaNewCedente_Msg">
+    <wsdl:part name="parametersIn" element="tns:NewCedente" />
+  </wsdl:message>
+  <wsdl:message name="rispostaNewCedente_Msg">
+    <wsdl:part name="parametersOut" element="tns:Created" />
+  </wsdl:message>
+  <wsdl:message name="richiestaUpdateCedente_Msg">
+    <wsdl:part name="parametersIn" element="tns:UpdateCedente" />
+  </wsdl:message>
+  <wsdl:message name="rispostaUpdateCedente_Msg">
+    <wsdl:part name="parametersOut" element="tns:Updated" />
+  </wsdl:message>
+  <wsdl:message name="richiestaPrepareCedente_Msg">
+    <wsdl:part name="parametersIn" element="tns:Prepare" />
+  </wsdl:message>
+  <wsdl:message name="rispostaPrepareCedente_Msg">
+    <wsdl:part name="parametersOut" element="tns:PrepareCedente" />
+  </wsdl:message>
+  <wsdl:message name="richiestaElencoGestiti_Msg">
+    <wsdl:part name="parametersIn" element="tns:Gestore" />
+  </wsdl:message>
+  <wsdl:message name="rispostaElencoGestiti_Msg">
+    <wsdl:part name="parametersOut" element="tns:Cedenti" />
+  </wsdl:message>
+  <wsdl:message name="richiestaAttivazioneGestito_Msg">
+    <wsdl:part name="parametersIn" element="tns:AttGestito" />
+  </wsdl:message>
+  <wsdl:message name="rispostaAttivazioneGestito_Msg">
+    <wsdl:part name="parametersOut" element="tns:Enabled" />
+  </wsdl:message>
+  <wsdl:message name="richiestaSospensioneGestito_Msg">
+    <wsdl:part name="parametersIn" element="tns:SospGestito" />
+  </wsdl:message>
+  <wsdl:message name="rispostaSospensioneGestito_Msg">
+    <wsdl:part name="parametersOut" element="tns:Suspended" />
+  </wsdl:message>
+  <wsdl:message name="richiestaCreditiGestito_Msg">
+    <wsdl:part name="parametersIn" element="tns:CredGestito" />
+  </wsdl:message>
+  <wsdl:message name="rispostaCreditiGestito_Msg">
+    <wsdl:part name="parametersOut" element="tns:CreditiCedente" />
+  </wsdl:message>
+  <wsdl:message name="richiestaElencoFatture_Msg">
+    <wsdl:part name="parametersIn" element="tns:Filter" />
+  </wsdl:message>
+  <wsdl:message name="rispostaElencoFatture_Msg">
+    <wsdl:part name="parametersOut" element="tns:Fatture" />
+  </wsdl:message>
+  <wsdl:message name="richiestaElencoCorrispettivi_Msg">
+    <wsdl:part name="parametersIn" element="tns:FilterCorr" />
+  </wsdl:message>
+  <wsdl:message name="rispostaElencoCorrispettivi_Msg">
+    <wsdl:part name="parametersOut" element="tns:Corrispettivi" />
+  </wsdl:message>
+  <wsdl:message name="richiestaReport_Msg">
+    <wsdl:part name="parametersIn" element="tns:AccountingFilter" />
+  </wsdl:message>
+  <wsdl:message name="rispostaReport_Msg">
+    <wsdl:part name="parametersOut" element="tns:Resoconti" />
+  </wsdl:message>
+  <wsdl:message name="richiestaStato_Msg">
+    <wsdl:part name="parametersIn" element="tns:SimpleQuery" />
+  </wsdl:message>
+  <wsdl:message name="rispostaStato_Msg">
+    <wsdl:part name="parametersOut" element="tns:Status" />
+  </wsdl:message>
+  <wsdl:message name="richiestaDownload_Msg">
+    <wsdl:part name="parametersIn" element="tns:Query" />
+  </wsdl:message>
+  <wsdl:message name="rispostaDownload_Msg">
+    <wsdl:part name="parametersOut" element="tns:XML" />
+  </wsdl:message>
+  <wsdl:message name="richiestaDownloadZip_Msg">
+    <wsdl:part name="parametersIn" element="tns:ZipQuery" />
+  </wsdl:message>
+  <wsdl:message name="rispostaDownloadZip_Msg">
+    <wsdl:part name="parametersOut" element="tns:ZIP" />
+  </wsdl:message>
+  <wsdl:message name="richiestaDownloadAllZip_Msg">
+    <wsdl:part name="parametersIn" element="tns:MultiQuery" />
+  </wsdl:message>
+  <wsdl:message name="rispostaDownloadAllZip_Msg">
+    <wsdl:part name="parametersOut" element="tns:ZIP" />
+  </wsdl:message>
+  <wsdl:message name="richiestaDownloadPDF_Msg">
+    <wsdl:part name="parametersIn" element="tns:PDFQuery" />
+  </wsdl:message>
+  <wsdl:message name="rispostaDownloadPDF_Msg">
+    <wsdl:part name="parametersOut" element="tns:PDF" />
+  </wsdl:message>
+  <wsdl:message name="richiestaAttNotificaFE_Msg">
+    <wsdl:part name="parametersIn" element="tns:NotifyFE" />
+  </wsdl:message>
+  <wsdl:message name="rispostaAttNotificaFE_Msg">
+    <wsdl:part name="parametersOut" element="tns:AttNotifier" />
+  </wsdl:message>
+  <wsdl:message name="richiestaAggiornaPassword_Msg">
+    <wsdl:part name="parametersIn" element="tns:AggiornaPassword" />
+  </wsdl:message>
+  <wsdl:message name="rispostaAggiornaPassword_Msg">
+    <wsdl:part name="parametersOut" element="tns:PasswordAggiornata" />
+  </wsdl:message>
+  <wsdl:message name="richiestaRecuperoPassword_Msg">
+    <wsdl:part name="parametersIn" element="tns:RecuperaPassword" />
+  </wsdl:message>
+  <wsdl:message name="rispostaRecuperoPassword_Msg">
+    <wsdl:part name="parametersOut" element="tns:PasswordRecuperata" />
+  </wsdl:message>
+  <wsdl:message name="richiestaCambioPassword_Msg">
+    <wsdl:part name="parametersIn" element="tns:CambioPassword" />
+  </wsdl:message>
+  <wsdl:message name="rispostaCambioPassword_Msg">
+    <wsdl:part name="parametersOut" element="tns:PasswordCambiata" />
+  </wsdl:message>
+  <wsdl:message name="richiestaCambioEmail_Msg">
+    <wsdl:part name="parametersIn" element="tns:CambioEmail" />
+  </wsdl:message>
+  <wsdl:message name="rispostaCambioEmail_Msg">
+    <wsdl:part name="parametersOut" element="tns:EmailCambiata" />
+  </wsdl:message>
+  <wsdl:message name="richiestaDelete_Msg">
+    <wsdl:part name="parametersIn" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="rispostaDelete_Msg">
+    <wsdl:part name="parametersOut" element="tns:Deleted" />
+  </wsdl:message>
+  <wsdl:message name="richiestaImpostaFirma_Msg">
+    <wsdl:part name="parametersIn" element="tns:ImpostaFirma" />
+  </wsdl:message>
+  <wsdl:message name="rispostaImpostaFirma_Msg">
+    <wsdl:part name="parametersOut" element="tns:FirmaImpostata" />
+  </wsdl:message>
+  <wsdl:message name="erroreAutenticazione_Msg">
+    <wsdl:part name="fault" element="tns:Errore" />
+  </wsdl:message>
+  <wsdl:message name="richiestaStore_Msg">
+    <wsdl:part name="parametersIn" element="tns:Store" />
+  </wsdl:message>
+  <wsdl:message name="rispostaStore_Msg">
+    <wsdl:part name="parametersOut" element="tns:Stored" />
+  </wsdl:message>
+  <wsdl:message name="richiestaUnarchive_Msg">
+    <wsdl:part name="parametersIn" element="tns:Unarchive" />
+  </wsdl:message>
+  <wsdl:message name="rispostaUnarchive_Msg">
+    <wsdl:part name="parametersOut" element="tns:Unarchived" />
+  </wsdl:message>
+  <wsdl:message name="richiestaPasvNotificaFE_Msg">
+    <wsdl:part name="parametersIn" element="tns:PasvNotifyFE" />
+  </wsdl:message>
+  <wsdl:message name="rispostaPasvNotificaFE_Msg">
+    <wsdl:part name="parametersOut" element="tns:Notifier" />
+  </wsdl:message>
+  <wsdl:message name="richiestaPasvElencoFatture_Msg">
+    <wsdl:part name="parametersIn" element="tns:PasvFilter" />
+  </wsdl:message>
+  <wsdl:message name="rispostaPasvElencoFatture_Msg">
+    <wsdl:part name="parametersOut" element="tns:PasvFatture" />
+  </wsdl:message>
+  <wsdl:message name="richiestaPasvDownload_Msg">
+    <wsdl:part name="parametersIn" element="tns:PasvQuery" />
+  </wsdl:message>
+  <wsdl:message name="rispostaPasvDownload_Msg">
+    <wsdl:part name="parametersOut" element="tns:PasvXML" />
+  </wsdl:message>
+  <wsdl:message name="richiestaPasvDownloadZip_Msg">
+    <wsdl:part name="parametersIn" element="tns:PasvZipQuery" />
+  </wsdl:message>
+  <wsdl:message name="rispostaPasvDownloadZip_Msg">
+    <wsdl:part name="parametersOut" element="tns:PasvZIP" />
+  </wsdl:message>
+  <wsdl:message name="richiestaPasvDownloadAllZip_Msg">
+    <wsdl:part name="parametersIn" element="tns:PasvMultiQuery" />
+  </wsdl:message>
+  <wsdl:message name="rispostaPasvDownloadAllZip_Msg">
+    <wsdl:part name="parametersOut" element="tns:PasvZIP" />
+  </wsdl:message>
+  <wsdl:message name="richiestaPasvDownloadPDF_Msg">
+    <wsdl:part name="parametersIn" element="tns:PasvPDFQuery" />
+  </wsdl:message>
+  <wsdl:message name="rispostaPasvDownloadPDF_Msg">
+    <wsdl:part name="parametersOut" element="tns:PasvPDF" />
+  </wsdl:message>
+  <wsdl:message name="richiestaDownloadConserved_Msg">
+    <wsdl:part name="parametersIn" element="tns:PdDQuery" />
+  </wsdl:message>
+  <wsdl:message name="rispostaDownloadConserved_Msg">
+    <wsdl:part name="parametersOut" element="tns:PdD" />
+  </wsdl:message>
+  <wsdl:message name="richiestaDownloadCorr_Msg">
+    <wsdl:part name="parametersIn" element="tns:QueryCorr" />
+  </wsdl:message>
+  <wsdl:message name="rispostaDownloadCorr_Msg">
+    <wsdl:part name="parametersOut" element="tns:XMLCorr" />
+  </wsdl:message>
+  <wsdl:message name="richiestaImportAttive_Msg">
+    <wsdl:part name="parametersIn" element="tns:Import" />
+  </wsdl:message>
+  <wsdl:message name="rispostaImportAttive_Msg">
+    <wsdl:part name="parametersOut" element="tns:Ricevuta" />
+  </wsdl:message>
+  <wsdl:message name="richiestaImportPassive_Msg">
+    <wsdl:part name="parametersIn" element="tns:PasvImport" />
+  </wsdl:message>
+  <wsdl:message name="rispostaImportPassive_Msg">
+    <wsdl:part name="parametersOut" element="tns:PasvRicevuta" />
+  </wsdl:message>
+  <wsdl:message name="richiestaImportEvent_Msg">
+    <wsdl:part name="parametersIn" element="tns:ImportEvent" />
+  </wsdl:message>
+  <wsdl:message name="rispostaImportEvent_Msg">
+    <wsdl:part name="parametersOut" element="tns:Ricevuta" />
+  </wsdl:message>
+  <wsdl:message name="richiestaAccept_Msg">
+    <wsdl:part name="parametersIn" element="tns:Accept" />
+  </wsdl:message>
+  <wsdl:message name="rispostaAccept_Msg">
+    <wsdl:part name="parametersOut" element="tns:Accepted" />
+  </wsdl:message>
+  <wsdl:message name="richiestaSetPin_Msg">
+    <wsdl:part name="parametersIn" element="tns:SetPin" />
+  </wsdl:message>
+  <wsdl:message name="rispostaSetPin_Msg">
+    <wsdl:part name="parametersOut" element="tns:Set" />
+  </wsdl:message>
+  <wsdl:message name="richiestaSetConf_Msg">
+    <wsdl:part name="parametersIn" element="tns:SetConf" />
+  </wsdl:message>
+  <wsdl:message name="rispostaSetConf_Msg">
+    <wsdl:part name="parametersOut" element="tns:UpdatedConf" />
+  </wsdl:message>
+  <wsdl:message name="richiestaStats_Msg">
+    <wsdl:part name="parametersIn" element="tns:StatsReq" />
+  </wsdl:message>
+  <wsdl:message name="rispostaStats_Msg">
+    <wsdl:part name="parametersOut" element="tns:Stats" />
+  </wsdl:message>
+  <wsdl:message name="erroreFattura_Msg">
+    <wsdl:part name="fault" element="tns:Errore" />
+  </wsdl:message>
+  <wsdl:message name="erroreCorrispettivo_Msg">
+    <wsdl:part name="fault" element="tns:Errore" />
+  </wsdl:message>
+  <wsdl:message name="erroreGenerico_Msg">
+    <wsdl:part name="fault" element="tns:Errore" />
+  </wsdl:message>
+  <wsdl:portType name="GatewayServiziUtente">
+    <wsdl:operation name="ServerInfo">
+      <wsdl:documentation>Returns informations about the server.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaServerInfo_Msg" />
+      <wsdl:output message="tns:rispostaServerInfo_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="Info">
+      <wsdl:documentation>Returns all informations about the specified user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaInfo_Msg" />
+      <wsdl:output message="tns:rispostaInfo_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="InviaFattura">
+      <wsdl:documentation>Sends an invoice as the authenticated user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaInviaFattura_Msg" />
+      <wsdl:output message="tns:rispostaInviaFattura_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreFattura" message="tns:erroreFattura_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="InviaFatturaSM">
+      <wsdl:documentation>Sends a simplified invoice as the authenticated user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaInviaFatturaSM_Msg" />
+      <wsdl:output message="tns:rispostaInviaFatturaSM_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreFattura" message="tns:erroreFattura_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="InviaCorrispettivo">
+      <wsdl:documentation>Sends a corresponding document.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaInviaCorrispettivo_Msg" />
+      <wsdl:output message="tns:rispostaInviaCorrispettivo_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreCorrispettivo" message="tns:erroreCorrispettivo_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="AnnullaCorrispettivo">
+      <wsdl:documentation>Sends a corresponding document.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaAnnullaCorrispettivo_Msg" />
+      <wsdl:output message="tns:rispostaAnnullaCorrispettivo_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreCorrispettivo" message="tns:erroreCorrispettivo_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="NewCedente">
+      <wsdl:documentation>Add a new user in the system.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaNewCedente_Msg" />
+      <wsdl:output message="tns:rispostaNewCedente_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateCedente">
+      <wsdl:documentation>Update an user in the system.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaUpdateCedente_Msg" />
+      <wsdl:output message="tns:rispostaUpdateCedente_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="PrepareCedente">
+      <wsdl:input message="tns:richiestaPrepareCedente_Msg" />
+      <wsdl:output message="tns:rispostaPrepareCedente_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="ElencoGestiti">
+      <wsdl:documentation>List all users managed by the authenticated user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaElencoGestiti_Msg" />
+      <wsdl:output message="tns:rispostaElencoGestiti_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="AttivazioneGestito">
+      <wsdl:documentation>Add a new managed user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaAttivazioneGestito_Msg" />
+      <wsdl:output message="tns:rispostaAttivazioneGestito_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="SospensioneGestito">
+      <wsdl:documentation>Suspend a managed user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaSospensioneGestito_Msg" />
+      <wsdl:output message="tns:rispostaSospensioneGestito_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="CreditiGestito">
+      <wsdl:documentation>Check credits of a managed user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaCreditiGestito_Msg" />
+      <wsdl:output message="tns:rispostaCreditiGestito_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="ElencoFatture">
+      <wsdl:documentation>Search active invoices.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaElencoFatture_Msg" />
+      <wsdl:output message="tns:rispostaElencoFatture_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="PasvElencoFatture">
+      <wsdl:documentation>Search passive invoices.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaPasvElencoFatture_Msg" />
+      <wsdl:output message="tns:rispostaPasvElencoFatture_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="ElencoCorrispettivi">
+      <wsdl:documentation>Search corrispettivi.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaElencoCorrispettivi_Msg" />
+      <wsdl:output message="tns:rispostaElencoCorrispettivi_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="Report">
+      <wsdl:documentation>TODO:doc.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaReport_Msg" />
+      <wsdl:output message="tns:rispostaReport_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="Stato">
+      <wsdl:documentation>Status of an invoice.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaStato_Msg" />
+      <wsdl:output message="tns:rispostaStato_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="AttNotificaFE">
+      <wsdl:documentation>TODO:doc.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaAttNotificaFE_Msg" />
+      <wsdl:output message="tns:rispostaAttNotificaFE_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="Download">
+      <wsdl:documentation>Download active invoice XML.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaDownload_Msg" />
+      <wsdl:output message="tns:rispostaDownload_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="DownloadZip">
+      <wsdl:documentation>Download ZIP with active invoice and all events.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaDownloadZip_Msg" />
+      <wsdl:output message="tns:rispostaDownloadZip_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="DownloadAllZip">
+      <wsdl:documentation>Download ZIP with active invoices and all events.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaDownloadAllZip_Msg" />
+      <wsdl:output message="tns:rispostaDownloadAllZip_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="DownloadPDF">
+      <wsdl:documentation>Download PDF representation of active invoice.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaDownloadPDF_Msg" />
+      <wsdl:output message="tns:rispostaDownloadPDF_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:documentation>Delete invoice.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaDelete_Msg" />
+      <wsdl:output message="tns:rispostaDelete_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="RecuperaPassword">
+      <wsdl:documentation>Restore password.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaRecuperoPassword_Msg" />
+      <wsdl:output message="tns:rispostaRecuperoPassword_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="AggiornaPassword">
+      <wsdl:documentation>Update password.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaAggiornaPassword_Msg" />
+      <wsdl:output message="tns:rispostaAggiornaPassword_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="CambioPassword">
+      <wsdl:documentation>Update password.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaCambioPassword_Msg" />
+      <wsdl:output message="tns:rispostaCambioPassword_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="CambioEmail">
+      <wsdl:documentation>Change user email.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaCambioEmail_Msg" />
+      <wsdl:output message="tns:rispostaCambioEmail_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="ImpostaFirma">
+      <wsdl:documentation>Set user signature certificate.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaImpostaFirma_Msg" />
+      <wsdl:output message="tns:rispostaImpostaFirma_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="SetPin">
+      <wsdl:documentation>Set user signature PIN.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaSetPin_Msg" />
+      <wsdl:output message="tns:rispostaSetPin_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="SetConf">
+      <wsdl:documentation>Enable/disable services for a user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaSetConf_Msg" />
+      <wsdl:output message="tns:rispostaSetConf_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="Stats">
+      <wsdl:documentation>TODO:doc.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaStats_Msg" />
+      <wsdl:output message="tns:rispostaStats_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="Unarchive">
+      <wsdl:documentation>TODO:doc.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaUnarchive_Msg" />
+      <wsdl:output message="tns:rispostaUnarchive_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="Store">
+      <wsdl:documentation>TODO:doc.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaStore_Msg" />
+      <wsdl:output message="tns:rispostaStore_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="PasvNotificaFE">
+      <wsdl:documentation>TODO:doc.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaPasvNotificaFE_Msg" />
+      <wsdl:output message="tns:rispostaPasvNotificaFE_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="Accept">
+      <wsdl:documentation>Accept passive invoice.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaAccept_Msg" />
+      <wsdl:output message="tns:rispostaAccept_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="PasvDownload">
+      <wsdl:documentation>Download passive invoice XML.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaPasvDownload_Msg" />
+      <wsdl:output message="tns:rispostaPasvDownload_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="PasvDownloadZip">
+      <wsdl:documentation>Download ZIP with passive invoice and events.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaPasvDownloadZip_Msg" />
+      <wsdl:output message="tns:rispostaPasvDownloadZip_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="PasvDownloadAllZip">
+      <wsdl:documentation>Download ZIP with passive invoices and events.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaPasvDownloadAllZip_Msg" />
+      <wsdl:output message="tns:rispostaPasvDownloadAllZip_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="PasvDownloadPDF">
+      <wsdl:documentation>Download PDF representation of passive invoice.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaPasvDownloadPDF_Msg" />
+      <wsdl:output message="tns:rispostaPasvDownloadPDF_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="DownloadConserved">
+      <wsdl:documentation>Download conserved invoice from TDoc.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaDownloadConserved_Msg" />
+      <wsdl:output message="tns:rispostaDownloadConserved_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="DownloadCorrispettivo">
+      <wsdl:documentation>Download corrispettivo XML.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaDownloadCorr_Msg" />
+      <wsdl:output message="tns:rispostaDownloadCorr_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="ImportAttive">
+      <wsdl:documentation>Imports a passive invoice as the authenticated user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaImportAttive_Msg" />
+      <wsdl:output message="tns:rispostaImportAttive_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreFattura" message="tns:erroreFattura_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="ImportPassive">
+      <wsdl:documentation>Imports a passive invoice as the authenticated user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaImportPassive_Msg" />
+      <wsdl:output message="tns:rispostaImportPassive_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreFattura" message="tns:erroreFattura_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+    <wsdl:operation name="ImportNotifica">
+      <wsdl:documentation>Imports a passive invoice as the authenticated user.</wsdl:documentation>
+      <wsdl:input message="tns:richiestaImportEvent_Msg" />
+      <wsdl:output message="tns:rispostaImportEvent_Msg" />
+      <wsdl:fault name="erroreAutenticazione" message="tns:erroreAutenticazione_Msg" />
+      <wsdl:fault name="erroreFattura" message="tns:erroreFattura_Msg" />
+      <wsdl:fault name="erroreGenerico" message="tns:erroreGenerico_Msg" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GatewayServiziUtente_binding" type="tns:GatewayServiziUtente">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ServerInfo">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/ServerInfo" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Info">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/Info" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="InviaFattura">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/InviaFattura" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreFattura">
+        <soap:fault use="literal" name="erroreFattura" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="InviaFatturaSM">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/InviaFatturaSM" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreFattura">
+        <soap:fault use="literal" name="erroreFattura" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="InviaCorrispettivo">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/InviaCorrispettivo" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreCorrispettivo">
+        <soap:fault use="literal" name="erroreCorrispettivo" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AnnullaCorrispettivo">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/AnnullaCorrispettivo" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreCorrispettivo">
+        <soap:fault use="literal" name="erroreCorrispettivo" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="NewCedente">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/NewCedente" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateCedente">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/UpdateCedente" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="PrepareCedente">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/PrepareCedente" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ElencoGestiti">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/ElencoGestiti" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AttivazioneGestito">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/AttivazioneGestito" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SospensioneGestito">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/SospensioneGestito" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CreditiGestito">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/CreditiGestito" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ElencoFatture">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/ElencoFatture" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ElencoCorrispettivi">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/ElencoCorrispettivi" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Report">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/Report" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Stato">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/Stato" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Download">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/Download" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadZip">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/DownloadZip" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadAllZip">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/DownloadAllZip" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadPDF">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/DownloadPDF" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadCorrispettivo">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/DownloadCorrispettivo" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AttNotificaFE">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/AttNotificaFE" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/Delete" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="RecuperaPassword">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/RecuperaPassword" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AggiornaPassword">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/AggiornaPassword" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CambioPassword">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/CambioPassword" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CambioEmail">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/CambioEmail" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ImpostaFirma">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/ImpostaFirma" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SetPin">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/SetPin" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SetConf">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/SetConf" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Stats">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/Stats" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="PasvElencoFatture">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/PasvElencoFatture" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="PasvDownload">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/PasvDownload" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="PasvDownloadZip">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/PasvDownloadZip" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="PasvDownloadAllZip">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/PasvDownloadAllZip" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="PasvDownloadPDF">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/PasvDownloadPDF" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadConserved">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/DownloadConserved" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ImportAttive">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/ImportAttive" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreFattura">
+        <soap:fault use="literal" name="erroreFattura" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ImportPassive">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/ImportPassive" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreFattura">
+        <soap:fault use="literal" name="erroreFattura" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ImportNotifica">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/ImportNotifica" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreFattura">
+        <soap:fault use="literal" name="erroreFattura" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Accept">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/Accept" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="PasvNotificaFE">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/NotificaFE" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Unarchive">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/Unarchive" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Store">
+      <soap:operation soapAction="http://www.fatturapa.it/GatewayServiziUtente/Store" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="erroreAutenticazione">
+        <soap:fault use="literal" name="erroreAutenticazione" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="erroreGenerico">
+        <soap:fault use="literal" name="erroreGenerico" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GatewayServiziUtente_service">
+    <wsdl:port name="GatewayServiziUtente_port" binding="tns:GatewayServiziUtente_binding">
+      <soap:address location="https://tinv.andxor.it:443/userServices" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
