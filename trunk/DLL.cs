@@ -474,6 +474,53 @@ namespace tinv_csharp_api
             }
         }
 
+        public userServices.RicevutaType inviaFatturaSMStr(userServices.AutenticazioneType auth, String codiceDestinatario, String pecDestinatario, String overrideCedente, String cessionarioCommittente, String fatturaElettronicaBody)
+        {
+            Console.WriteLine("Invia fattura semplificata (string version)");
+            userServices.FatturaSMType f = new userServices.FatturaSMType();
+            f.Autenticazione = auth;
+            if (codiceDestinatario != null && pecDestinatario == null)
+            {
+                f.Item = codiceDestinatario;
+                f.ItemElementName = userServices.ItemChoiceType8.CodiceDestinatario;
+            }
+            else if (pecDestinatario != null && codiceDestinatario == null)
+            {
+                f.Item = pecDestinatario;
+                f.ItemElementName = userServices.ItemChoiceType8.PECDestinatario;
+            }
+            else
+            {
+                Console.WriteLine("Errore, inseriti sia CodiceDestinatario che PECDestinatario");
+                throw new Exception("Non é possibile valorizzare sia CodiceDestinatario che PECDestinatario");
+            }
+            if (overrideCedente != null)
+            {
+                Console.WriteLine("Attenzione: overrideCedente specificato.");
+                f.Item1 = overrideCedente;
+                f.ItemElementName1 = userServices.ItemChoiceType9.OverrideCedenteStr;
+            }
+            if (cessionarioCommittente != null)
+            {
+                f.Item2 = cessionarioCommittente;
+                f.ItemElementName2 = userServices.ItemChoiceType10.CessionarioCommittenteStr;
+            }
+            if (fatturaElettronicaBody != null)
+            {
+                f.Item3 = fatturaElettronicaBody;
+                f.ItemElementName3 = userServices.ItemChoiceType11.FatturaElettronicaBodyStr;
+            }
+            try
+            {
+                return srv.InviaFatturaSM(f);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception:" + e);
+                throw;
+            }
+        }
+
         public userServices.AttNotifierType scaricaNotificaAttiva(userServices.AutenticazioneType auth, String idSdi)
         {
             Console.WriteLine("Download notifica attiva in corso...");
