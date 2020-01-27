@@ -570,7 +570,7 @@ namespace tinv_csharp_api
             }
         }
 
-        public userServices.FileType downloadZipInvoice(userServices.AutenticazioneType auth, userServices.ZipQueryType zq)
+        public userServices.FileType downloadZipInvoice(userServices.ZipQueryType zq)
         {
             userServices.FileType zip = new userServices.FileType();
             try
@@ -600,7 +600,7 @@ namespace tinv_csharp_api
             }
         }
 
-        public userServices.FileType downloadZipPassiveInvoice(userServices.AutenticazioneType auth, userServices.PasvZipQueryType zq)
+        public userServices.FileType downloadZipPassiveInvoice(userServices.PasvZipQueryType zq)
         {
             userServices.FileType zip = new userServices.FileType();
             try
