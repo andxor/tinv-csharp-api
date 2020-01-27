@@ -9489,7 +9489,14 @@ namespace tinv_csharp_api.userServices
 
         private string itemField;
 
-        private ItemChoiceType1 itemElementNameField;
+        private ItemChoiceType8 itemElementNameField;
+
+        private ItemChoiceType9 itemElementNameField1;
+
+        private ItemChoiceType10 itemElementNameField2;
+
+        private ItemChoiceType11 itemElementNameField3;
+
 
         private object item1Field;
 
@@ -9529,7 +9536,7 @@ namespace tinv_csharp_api.userServices
 
         /// <remarks/>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public ItemChoiceType1 ItemElementName
+        public ItemChoiceType8 ItemElementName
         {
             get
             {
@@ -9544,6 +9551,7 @@ namespace tinv_csharp_api.userServices
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("OverrideCedente", typeof(CedentePrestatoreType1), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlElementAttribute("OverrideCedenteStr", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemElementName1")]
         public object Item1
         {
             get
@@ -9557,8 +9565,23 @@ namespace tinv_csharp_api.userServices
         }
 
         /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public ItemChoiceType9 ItemElementName1
+        {
+            get
+            {
+                return this.itemElementNameField1;
+            }
+            set
+            {
+                this.itemElementNameField1 = value;
+            }
+        }
+
+        /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("CessionarioCommittente", typeof(CessionarioCommittenteType1), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlElementAttribute("CessionarioCommittenteStr", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemElementName2")]
         public object Item2
         {
             get
@@ -9572,8 +9595,23 @@ namespace tinv_csharp_api.userServices
         }
 
         /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public ItemChoiceType10 ItemElementName2
+        {
+            get
+            {
+                return this.itemElementNameField2;
+            }
+            set
+            {
+                this.itemElementNameField2 = value;
+            }
+        }
+
+        /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("FatturaElettronicaBody", typeof(FatturaElettronicaBodyType1), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlElementAttribute("FatturaElettronicaBodyStr", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemElementName3")]
         public object Item3
         {
             get
@@ -9585,13 +9623,27 @@ namespace tinv_csharp_api.userServices
                 this.item3Field = value;
             }
         }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public ItemChoiceType11 ItemElementName3
+        {
+            get
+            {
+                return this.itemElementNameField3;
+            }
+            set
+            {
+                this.itemElementNameField3 = value;
+            }
+        }
     }
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.andxor.com/fatturapa/wsdl", IncludeInSchema = false)]
-    public enum ItemChoiceType1
+    public enum ItemChoiceType8
     {
 
         /// <remarks/>
@@ -9601,6 +9653,54 @@ namespace tinv_csharp_api.userServices
         /// <remarks/>
         [System.Xml.Serialization.XmlEnumAttribute(":PECDestinatario")]
         PECDestinatario,
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.andxor.com/fatturapa/wsdl", IncludeInSchema = false)]
+    public enum ItemChoiceType9
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute(":OverrideCedente")]
+        OverrideCedente,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute(":OverrideCedenteStr")]
+        OverrideCedenteStr,
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.andxor.com/fatturapa/wsdl", IncludeInSchema = false)]
+    public enum ItemChoiceType10
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute(":CessionarioCommittente")]
+        CessionarioCommittente,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute(":CessionarioCommittenteStr")]
+        CessionarioCommittenteStr,
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.andxor.com/fatturapa/wsdl", IncludeInSchema = false)]
+    public enum ItemChoiceType11
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute(":FatturaElettronicaBody")]
+        FatturaElettronicaBody,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute(":FatturaElettronicaBodyStr")]
+        FatturaElettronicaBodyStr,
     }
 
     /// <remarks/>
@@ -13216,13 +13316,14 @@ namespace tinv_csharp_api.userServices
 
         private object item1Field;
 
-        private bool terzoIntermediarioField;
-
-        private bool terzoIntermediarioFieldSpecified;
 
         private object item2Field;
 
         private object item3Field;
+
+        private bool terzoIntermediarioField;
+
+        private bool terzoIntermediarioFieldSpecified;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
