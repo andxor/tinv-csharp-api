@@ -169,7 +169,7 @@ namespace tinv_csharp_api
             {
                 Console.WriteLine("Exception:" + e);
                 //fatture = new userServices.ShortStatusType[0];
-                throw e;
+                throw;
             }
             return fatture;
         }
